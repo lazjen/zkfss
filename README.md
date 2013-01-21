@@ -84,14 +84,17 @@ FeatureSwitchService fs = new ZKFeatureSwitchService()
 ...
 
 if (fs.isEnabled("myFeature")) {
-  ...feature is enabled at either "/myNS/myFeature/myAppName", "/myNS/myFeature/myHost" or "/myNS/myFeature" 
+  ...feature is enabled at either 
+    "/myNS/myFeature/myAppName", 
+    "/myNS/myFeature/myHost" or 
+    "/myNS/myFeature" 
   (in that order and assuming your host is "myHost")
   ...do stuff...
 }
 
 ...
 zkfss.stop()
-```java
+```
 
 Contact Details
 ---------------
