@@ -74,7 +74,7 @@ zkfss.stop()
 2. using configuration overrides
 
 ```java
-FeatureSwitchService fs = new ZKFeatureSwitchService()
+ZKFeatureSwitchService zkfss = new ZKFeatureSwitchService()
 .setFeatureSwitchNamespace("myNS")  // uses /myNS/ instead of /zkfss/ for the name space
 .enableHostnameSubKey()             // hostname sub-key is on by default anyway
 .setApplicationName("myAppName")    // set our application name - this should be unique per application instance
@@ -83,7 +83,7 @@ FeatureSwitchService fs = new ZKFeatureSwitchService()
 .start();
 ...
 
-if (fs.isEnabled("myFeature")) {
+if (zkfss.isEnabled("myFeature")) {
   ...feature is enabled at either 
     "/myNS/myFeature/myAppName", 
     "/myNS/myFeature/myHost" or 
