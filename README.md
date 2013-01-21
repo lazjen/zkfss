@@ -58,7 +58,8 @@ Usage Examples
 --------------
 
 1. Using a default configuration.
- 
+
+```java
 ZKFeatureSwitchService zkfss = new ZKFeatureSwitchService().start();
 ...
 
@@ -68,9 +69,11 @@ if (zkfss.isEnabled("myFeature")) {
 
 ...
 zkfss.stop()
+```
 
 2. using configuration overrides
 
+```java
 FeatureSwitchService fs = new ZKFeatureSwitchService()
 .setFeatureSwitchNamespace("myNS")  // uses /myNS/ instead of /zkfss/ for the name space
 .enableHostnameSubKey()             // hostname sub-key is on by default anyway
@@ -88,6 +91,7 @@ if (fs.isEnabled("myFeature")) {
 
 ...
 zkfss.stop()
+```java
 
 Contact Details
 ---------------
