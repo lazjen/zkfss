@@ -57,7 +57,7 @@ Feature switch values are evaluated in the following order:
 Usage Examples
 --------------
 
-1. Using a default configuration.
+. Using a default configuration.
 
 ```java
 ZKFeatureSwitchService zkfss = new ZKFeatureSwitchService().start();
@@ -71,7 +71,7 @@ if (zkfss.isEnabled("myFeature")) {
 zkfss.stop()
 ```
 
-2. using configuration overrides
+. Using configuration overrides
 
 ```java
 ZKFeatureSwitchService zkfss = new ZKFeatureSwitchService()
