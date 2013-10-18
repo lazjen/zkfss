@@ -38,7 +38,7 @@ Values in feature switches nodes are expected to be boolean.  In fact, the syste
 true and anything else is evaluated as false.
 
 Your feature switch names can be anything that matches a legal Zookeeper node name.  If the hostname subkey option is set, 
-the hostname is used as a sub-node to the feature switch name path.  A simnilar approach is used if an application name is
+the hostname is used as a sub-node to the feature switch name path.  A similar approach is used if an application name is
 set.
 
 Example using the default name space of "/zkfss/", a feature switch named "X":

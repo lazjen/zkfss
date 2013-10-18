@@ -22,7 +22,8 @@ public class ZKFeatureSwitchServiceTest {
     private static final String FEATURE_SWITCH1 = "Test";
     private static final String FEATURE_SWITCH2 = "blah";
     private static final String TEST_APPLICATION_NAME = "XYZ";
-    private static final String TEST_FEATURE_SWITCH_NAMESPACE = "/";
+    private static final String TEST_FEATURE_SWITCH_NAMESPACE_NODE = "/foo";
+    private static final String TEST_FEATURE_SWITCH_NAMESPACE = TEST_FEATURE_SWITCH_NAMESPACE_NODE + "/";
     private static final String ZK_PATH_FS2 = TEST_FEATURE_SWITCH_NAMESPACE + FEATURE_SWITCH2;
     private TestingServer ts;
     private String hostname;
@@ -39,8 +40,10 @@ public class ZKFeatureSwitchServiceTest {
     }
 
     @Test
-    public void testIsEnabledForFeatureNotSet() {
+    public void testIsEnabledForFeatureNotSet() throws Exception {
         ZKFeatureSwitchService cfs = new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE).start();
+        CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
 
         assertFalse(cfs.isEnabled(FEATURE_SWITCH1));
         cfs.stop();
@@ -49,8 +52,9 @@ public class ZKFeatureSwitchServiceTest {
     @Test
     public void testIsEnabledForFeatureSet() throws Exception {
         ZKFeatureSwitchService cfs = new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE).start();
-
         CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
+
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
         assertTrue(cfs.isEnabled(FEATURE_SWITCH2));
         curatorFrameworkClient.setData().forPath(ZK_PATH_FS2, FALSE);
@@ -68,6 +72,7 @@ public class ZKFeatureSwitchServiceTest {
                 new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE).disableHostnameSubKey()
                         .start();
         CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, FALSE);
         assertTrue(cfs.isEnabled(FEATURE_SWITCH2));
@@ -80,6 +85,7 @@ public class ZKFeatureSwitchServiceTest {
                 new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE).enableHostnameSubKey()
                         .start();
         CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, FALSE);
         assertFalse(cfs.isEnabled(FEATURE_SWITCH2));
@@ -92,6 +98,7 @@ public class ZKFeatureSwitchServiceTest {
                 new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE)
                         .setApplicationName(TEST_APPLICATION_NAME).disableHostnameSubKey().start();
         CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, FALSE);
         assertFalse(cfs.isEnabled(FEATURE_SWITCH2));
@@ -104,6 +111,7 @@ public class ZKFeatureSwitchServiceTest {
                 new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE)
                         .setApplicationName(TEST_APPLICATION_NAME).enableHostnameSubKey().start();
         CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, FALSE);
@@ -114,7 +122,7 @@ public class ZKFeatureSwitchServiceTest {
     @Test(expected = IllegalStateException.class)
     public void testNoConfigurationChangeAllowedForRunningSystem() throws Exception {
         ZKFeatureSwitchService cfs = new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE).start();
-        cfs.disableHostnameSubKey();
+         cfs.disableHostnameSubKey();
         fail("Should not be able to change configuration while service is running");
     }
 
