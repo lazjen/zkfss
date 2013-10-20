@@ -119,6 +119,51 @@ public class ZKFeatureSwitchServiceTest {
         cfs.stop();
     }
 
+    @Test
+    public void testHostNameAndApplicationNameOverride() throws Exception {
+        ZKFeatureSwitchService cfs =
+                new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE)
+                        .setApplicationName(TEST_APPLICATION_NAME).enableHostnameSubKey().start();
+        CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, TRUE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, TRUE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "/" + hostname, FALSE);
+        assertFalse(cfs.isEnabled(FEATURE_SWITCH2));
+        cfs.stop();
+    }
+
+    @Test
+    public void testHostNameAndApplicationNameOverrideInvertedValues() throws Exception {
+        ZKFeatureSwitchService cfs =
+                new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE)
+                        .setApplicationName(TEST_APPLICATION_NAME).enableHostnameSubKey().start();
+        CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "/" + hostname, TRUE);
+        assertTrue(cfs.isEnabled(FEATURE_SWITCH2));
+        cfs.stop();
+    }
+
+    @Test
+    public void testHostNameAndApplicationNameOverrideMixedValues() throws Exception {
+        ZKFeatureSwitchService cfs =
+                new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE)
+                        .setApplicationName(TEST_APPLICATION_NAME).enableHostnameSubKey().start();
+        CuratorFramework curatorFrameworkClient = cfs.getCuratorFrameworkClient();
+        curatorFrameworkClient.create().forPath(TEST_FEATURE_SWITCH_NAMESPACE_NODE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, TRUE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "/" + hostname, FALSE);
+        assertFalse(cfs.isEnabled(FEATURE_SWITCH2));
+        cfs.stop();
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testNoConfigurationChangeAllowedForRunningSystem() throws Exception {
         ZKFeatureSwitchService cfs = new ZKFeatureSwitchService().setFeatureSwitchNamespace(TEST_FEATURE_SWITCH_NAMESPACE).start();

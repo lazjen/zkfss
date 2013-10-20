@@ -248,6 +248,22 @@ public class ZKFeatureSwitchService implements FeatureSwitchService {
             throw new IllegalStateException("ZKFeatureSwitchService not running!");
         }
 
+        if (applicationName != null && useHostnameSubKey) {
+            String keyForApplicationName = featureSwitchNamespace + key + "/" + applicationName + "/" + hostname;
+
+            if (featureValues.containsKey(keyForApplicationName)) {
+                return featureValues.get(keyForApplicationName);
+            } else {
+                if (!nodeCaches.containsKey(keyForApplicationName)) {
+                    // create watch on node
+                    Boolean result = setupNodeWatch(keyForApplicationName);
+                    if (result != null) {
+                        return result;
+                    }
+                }
+            }
+        }
+
         if (applicationName != null) {
             String keyForApplicationName = featureSwitchNamespace + key + "/" + applicationName;
 

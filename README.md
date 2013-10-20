@@ -46,9 +46,11 @@ Example using the default name space of "/zkfss/", a feature switch named "X":
 * The boolean value is stored at /zkfss/X.
 * If hostname subkey is set, and the hostname is "myHost", then an override value for the host is stored at "/zkfss/X/myHost".
 * If an application name is set, e.g. "myApp", then an override value for the application is stored at "/zkfss/X/myApp".
+* If hostname subkey is set, and the hostname is "myHost" and an application name is set, e.g. "myApp", then an override value for the application is stored at "/zkfss/X/myApp/myHost"
 
 Feature switch values are evaluated in the following order:
 
+* Host name node value override of an Application name node value
 * Application name node value override
 * Host name node value override
 * Feature Switch node value
@@ -85,6 +87,7 @@ ZKFeatureSwitchService zkfss = new ZKFeatureSwitchService()
 
 if (zkfss.isEnabled("myFeature")) {
   ...feature is enabled at either 
+    "/myNS/myFeature/myAppName/myHost", 
     "/myNS/myFeature/myAppName", 
     "/myNS/myFeature/myHost" or 
     "/myNS/myFeature" 
