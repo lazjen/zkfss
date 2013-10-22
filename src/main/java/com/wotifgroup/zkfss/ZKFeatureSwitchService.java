@@ -249,7 +249,7 @@ public class ZKFeatureSwitchService implements FeatureSwitchService {
         }
 
         if (applicationName != null && useHostnameSubKey) {
-            String keyForApplicationName = featureSwitchNamespace + key + "/" + applicationName + "/" + hostname;
+            String keyForApplicationName = featureSwitchNamespace + key + "/" + applicationName + "_" + hostname;
 
             if (featureValues.containsKey(keyForApplicationName)) {
                 return featureValues.get(keyForApplicationName);

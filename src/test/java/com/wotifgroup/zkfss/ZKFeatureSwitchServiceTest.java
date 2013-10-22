@@ -129,7 +129,7 @@ public class ZKFeatureSwitchServiceTest {
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, TRUE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, TRUE);
-        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "/" + hostname, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "_" + hostname, FALSE);
         assertFalse(cfs.isEnabled(FEATURE_SWITCH2));
         cfs.stop();
     }
@@ -144,7 +144,7 @@ public class ZKFeatureSwitchServiceTest {
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, FALSE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, FALSE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, FALSE);
-        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "/" + hostname, TRUE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "_" + hostname, TRUE);
         assertTrue(cfs.isEnabled(FEATURE_SWITCH2));
         cfs.stop();
     }
@@ -159,7 +159,7 @@ public class ZKFeatureSwitchServiceTest {
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2, FALSE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + hostname, FALSE);
         curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME, TRUE);
-        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "/" + hostname, FALSE);
+        curatorFrameworkClient.create().forPath(ZK_PATH_FS2 + "/" + TEST_APPLICATION_NAME + "_" + hostname, FALSE);
         assertFalse(cfs.isEnabled(FEATURE_SWITCH2));
         cfs.stop();
     }
