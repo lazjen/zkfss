@@ -249,7 +249,7 @@ public class ZKFeatureSwitchService implements FeatureSwitchService {
         }
 
         if (applicationName != null && useHostnameSubKey) {
-            String keyForApplicationName = featureSwitchNamespace + key + "/" + applicationName + "_" + hostname;
+            String keyForApplicationName = featureSwitchNamespace + key + "/" + applicationName + "/" + hostname;
 
             if (featureValues.containsKey(keyForApplicationName)) {
                 return featureValues.get(keyForApplicationName);
@@ -302,7 +302,10 @@ public class ZKFeatureSwitchService implements FeatureSwitchService {
         } else {
             if (!nodeCaches.containsKey(fsKey)) {
                 // create watch on node
-                return setupNodeWatch(fsKey);
+                Boolean result =  setupNodeWatch(fsKey);
+                if (result != null) {
+                    return result;
+                }
             }
         }
 
@@ -331,13 +334,17 @@ public class ZKFeatureSwitchService implements FeatureSwitchService {
     }
 
     private Boolean cacheCurrentValue(final String key, final NodeCache nc) {
-        Boolean value = null;
+        Boolean value = null;  // default if no correct data set
         ChildData currentData = nc.getCurrentData();
         if (currentData != null) {
             byte[] newDataValue = currentData.getData();
             if (newDataValue != null) {
                 String stringvalue = new String(newDataValue);
-                value = "true".equalsIgnoreCase(stringvalue) || "1".equals(stringvalue);
+                if ("true".equalsIgnoreCase(stringvalue) || "1".equals(stringvalue)) {
+                    value = true;
+                } else if ("false".equalsIgnoreCase(stringvalue) || "0".equals(stringvalue)) {
+                    value = false;
+                }
             }
         }
         if (value != null) {

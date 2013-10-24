@@ -35,7 +35,7 @@ By default, feature switch values are read from nodes under "/zkfss/".  If you w
 another path, use the setFeatureSwitchNamespace method.  
 
 Values in feature switches nodes are expected to be boolean.  In fact, the system looks for the word "true" or "1" for 
-true and anything else is evaluated as false.
+true and "false" or "0" is evaluated as false.  A node is ignored if the value is not valid.
 
 Your feature switch names can be anything that matches a legal Zookeeper node name.  If the hostname subkey option is set, 
 the hostname is used as a sub-node to the feature switch name path.  A similar approach is used if an application name is
@@ -47,8 +47,7 @@ Example using the default name space of "/zkfss/", a feature switch named "X":
 * If hostname subkey is set, and the hostname is "myHost", then an override value for the host is stored at "/zkfss/X/myHost".
 * If an application name is set, e.g. "myApp", then an override value for the application is stored at "/zkfss/X/myApp".
 * If hostname subkey is set, and the hostname is "myHost" and an application name is set, e.g. "myApp", then an override value 
-for the application is stored at "/zkfss/X/myApp_myHost" (An underscore is used as the separator in this case to keep a flatter 
-node structure as the library used to check node values creates parent nodes)
+for the application is stored at "/zkfss/X/myApp/myHost" 
 
 Feature switch values are evaluated in the following order:
 
@@ -89,7 +88,7 @@ ZKFeatureSwitchService zkfss = new ZKFeatureSwitchService()
 
 if (zkfss.isEnabled("myFeature")) {
   ...feature is enabled at either 
-    "/myNS/myFeature/myAppName_myHost", 
+    "/myNS/myFeature/myAppName/myHost", 
     "/myNS/myFeature/myAppName", 
     "/myNS/myFeature/myHost" or 
     "/myNS/myFeature" 
